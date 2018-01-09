@@ -1,0 +1,20 @@
+#!/bin/bash
+
+val=$1
+
+if [[ -z $val ]]
+then
+	echo "No date range provided. Run cmcfomogen day or cmcfomogen week."
+	exit
+else
+	if [[ $val = "day" ]]
+	then
+		val=24h
+	elif [[ $val = "week" ]]
+	then
+		val=7d
+	fi
+	treturn=`curl -s https://api.coinmarketcap.com/v1/ticker/ | grep "percent_change_$val" | cut -d'"' -f4 | paste -sd+ - | bc`
+	areturn=`python -c "print($treturn/100)"`
+	python -c "print('{}%'.format($areturn))"
+fi
